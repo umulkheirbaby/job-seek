@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { env } = require('../../config/env');
 
 const CONNECTION_STATES = {
   0: 'disconnected',
@@ -21,7 +22,8 @@ const getHealth = async () => {
   return {
     status: readyState === 1 ? 'ok' : 'degraded',
     service: 'ilo-job-linkage-api',
-    sprint: 1,
+    sprint: 8,
+    environment: env.nodeEnv,
     uptimeSeconds: Math.round(process.uptime()),
     timestamp: new Date().toISOString(),
     database,

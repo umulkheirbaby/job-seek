@@ -42,11 +42,11 @@ export default function StatusPage() {
 
   return (
     <section className="page">
-      <p className="eyebrow">Sprint 1 vertical slice</p>
+      <p className="eyebrow">Monitoring</p>
       <h1>Platform status</h1>
       <p className="lede">
-        This page uses the shared API client to call <code>GET /api/v1/health</code>. It proves React,
-        Express, and MongoDB are wired together before authentication is added in Sprint 2.
+        Live health for the API and MongoDB. Use this page after a deploy to confirm the stack is
+        reachable.
       </p>
 
       {loading && <p className="status-note">Checking the API…</p>}
@@ -75,7 +75,7 @@ export default function StatusPage() {
           <article className="card">
             <p className="card__label">Service</p>
             <p className="card__value">{health.service}</p>
-            <p>Uptime {health.uptimeSeconds}s</p>
+            <p>Uptime {health.uptimeSeconds}s · {health.environment || 'local'}</p>
           </article>
         </div>
       )}

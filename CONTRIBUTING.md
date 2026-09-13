@@ -65,4 +65,5 @@ Page → feature API helper → src/services/axios.js → Express
 - Backend starts with `npm run dev:backend`
 - Frontend starts with `npm run dev:frontend`
 - `/status` still reaches `/api/v1/health`
+- `npm test` passes
 - No `.env` files are staged (`git status`)

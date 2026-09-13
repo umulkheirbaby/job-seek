@@ -2,7 +2,42 @@
 
 A MERN platform that connects youth, refugees, and other job seekers — especially in North Eastern Kenya — with employers offering local and remote work. Programme administrators can verify employers, approve jobs, manage users, and track placements.
 
-Sprint 7 adds the ILO programme dashboard, user management, and placement monitoring.
+Sprint 8 adds tests, security hardening, monitoring, and a Docker launch path.
+
+## Sprint 8 vertical slice
+
+1. From the repo root, run `npm test`. Backend integration tests and frontend unit tests should pass.
+2. Open `/status` — the page should show API health, MongoDB, uptime, and environment.
+3. Register and login stay rate-limited. Sessions stay in an httpOnly cookie. Production refuses to start without `JWT_SECRET`, `MONGODB_URI`, and `CLIENT_ORIGIN`.
+4. Optional launch: set `JWT_SECRET`, then run `docker compose up --build` and open [http://localhost:8080](http://localhost:8080).
+
+## Tests
+
+```bash
+npm test
+npm run test:backend
+npm run test:frontend
+```
+
+Backend tests use a separate MongoDB database: `ilo-job-linkage-test`.
+
+## Security
+
+- Helmet, CORS with credentials, and a 100kb JSON limit
+- bcrypt passwords and JWT in an httpOnly cookie
+- Rate limits on register and login
+- Stack traces only in development
+- Suspended accounts cannot sign in
+- Production requires `JWT_SECRET`, `MONGODB_URI`, and `CLIENT_ORIGIN`, and will not start if MongoDB is down
+
+## Deploy
+
+```bash
+set JWT_SECRET=a-long-random-string
+docker compose up --build
+```
+
+The web container serves the React build and proxies `/api` to the API. Point `CLIENT_ORIGIN` at the public site URL in a real environment.
 
 ## Sprint 7 vertical slice
 
@@ -11,8 +46,6 @@ Sprint 7 adds the ILO programme dashboard, user management, and placement monito
 3. Open `/admin/users`, suspend a job seeker, then try to sign in as that person — it should be blocked.
 4. Open `/admin/applications` and filter to Hired to see placements.
 5. Employer and job review still live at `/admin/employers` and `/admin/jobs`.
-
-## Sprint 6 vertical slice
 
 ## Sprint 6 vertical slice
 
@@ -149,4 +182,4 @@ frontend/src/
   store/           AppContext (session only)
 ```
 
-Quality, tests, and launch are Sprint 8. See `docs/Sprints.docx` and `CONTRIBUTING.md`.
+See `docs/Sprints.docx` and `CONTRIBUTING.md`.

@@ -1,0 +1,30 @@
+services:
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongo-data:/data/db
+
+  api:
+    build: ./backend
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGODB_URI: mongodb://mongo:27017/ilo-job-linkage
+      CLIENT_ORIGIN: ${CLIENT_ORIGIN:-http://localhost:8080}
+      JWT_SECRET: ${JWT_SECRET:-change-this-before-a-real-launch}
+      JWT_EXPIRES_IN: 7d
+      AUTH_COOKIE_NAME: ilo_session
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@ilo.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin12345}
+    depends_on:
+      - mongo
+
+  web:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+volumes:
+  mongo-data:

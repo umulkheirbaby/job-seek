@@ -14,8 +14,16 @@ const env = {
   adminPassword: process.env.ADMIN_PASSWORD || '',
 };
 
-if (env.nodeEnv === 'production' && !process.env.JWT_SECRET) {
-  throw new Error('JWT_SECRET is required in production');
+if (env.nodeEnv === 'production') {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is required in production');
+  }
+  if (!process.env.MONGODB_URI) {
+    throw new Error('MONGODB_URI is required in production');
+  }
+  if (!process.env.CLIENT_ORIGIN) {
+    throw new Error('CLIENT_ORIGIN is required in production');
+  }
 }
 
 module.exports = { env };

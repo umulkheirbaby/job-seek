@@ -15,6 +15,10 @@ const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
+if (env.nodeEnv === 'production') {
+  app.set('trust proxy', 1);
+}
+
 const corsOrigin = (origin, callback) => {
   if (!origin) {
     return callback(null, true);
@@ -38,7 +42,7 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
+app.use(express.json({ limit: '100kb' }));
 app.use(cookieParser());
 
 app.use((req, res, next) => {
@@ -55,7 +59,7 @@ app.get('/api/v1', (req, res) => {
     data: {
       name: 'ILO Job Linkage API',
       version: 'v1',
-      sprint: 7,
+      sprint: 8,
     },
   });
 });

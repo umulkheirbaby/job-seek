@@ -13,6 +13,9 @@ const start = async () => {
     }
   } catch (error) {
     console.error(`MongoDB connection failed: ${error.message}`);
+    if (env.nodeEnv === 'production') {
+      process.exit(1);
+    }
     console.error('API will start without a database. Check MONGODB_URI and try again.');
   }
 
