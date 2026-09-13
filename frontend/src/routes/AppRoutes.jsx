@@ -14,6 +14,7 @@ import ProfilePage from '../features/profile/ProfilePage';
 import EmployerDashboardPage from '../features/employers/EmployerDashboardPage';
 import CompanyProfilePage from '../features/employers/CompanyProfilePage';
 import AdminDashboardPage from '../features/admin/AdminDashboardPage';
+import JobSeekersReviewPage from '../features/admin/JobSeekersReviewPage';
 import EmployersReviewPage from '../features/admin/EmployersReviewPage';
 import JobsReviewPage from '../features/admin/JobsReviewPage';
 import UsersPage from '../features/admin/UsersPage';
@@ -30,7 +31,6 @@ export default function AppRoutes() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/status" element={<StatusPage />} />
         <Route path="/jobs" element={<JobsPage />} />
         <Route path="/jobs/:id" element={<JobDetailsPage />} />
         <Route element={<GuestOnly />}>
@@ -53,7 +53,9 @@ export default function AppRoutes() {
             <Route path="/employer/jobs/:id/applicants" element={<EmployerApplicantsPage />} />
           </Route>
           <Route element={<RequireRole roles={['admin']} />}>
+            <Route path="/status" element={<StatusPage />} />
             <Route path="/admin" element={<AdminDashboardPage />} />
+            <Route path="/admin/job-seekers" element={<JobSeekersReviewPage />} />
             <Route path="/admin/users" element={<UsersPage />} />
             <Route path="/admin/employers" element={<EmployersReviewPage />} />
             <Route path="/admin/jobs" element={<JobsReviewPage />} />

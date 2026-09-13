@@ -43,7 +43,7 @@ export default function EmployerJobsPage() {
     <section className="page page--wide">
       <p className="eyebrow">Employer</p>
       <h1>Your jobs</h1>
-      <p className="lede">New roles stay pending until ILO approves them. Published jobs appear on the public board.</p>
+      <p className="lede">New roles stay pending until EmpoweWithIT approves them. Published jobs appear on the public board.</p>
 
       <FeedbackBanner type="error">{error}</FeedbackBanner>
       <FeedbackBanner type="ok">{success}</FeedbackBanner>

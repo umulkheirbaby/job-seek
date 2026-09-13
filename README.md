@@ -1,4 +1,4 @@
-# ILO Job Linkage
+# EmpoweWithIT Job Linkage
 
 A MERN platform that connects youth, refugees, and other job seekers — especially in North Eastern Kenya — with employers offering local and remote work. Programme administrators can verify employers, approve jobs, manage users, and track placements.
 
@@ -41,7 +41,7 @@ The web container serves the React build and proxies `/api` to the API. Point `C
 
 ## Sprint 7 vertical slice
 
-1. Sign in as the seeded admin (`admin@ilo.local` / `Admin12345`).
+1. Sign in as the seeded admin (`admin@empoweewithit.local` / `Admin12345`).
 2. You should land on `/admin` with counts for users, employers, jobs, applications, interviews, and placements.
 3. Open `/admin/users`, suspend a job seeker, then try to sign in as that person — it should be blocked.
 4. Open `/admin/applications` and filter to Hired to see placements.
@@ -71,7 +71,7 @@ Unverified employers cannot post. Editing a published job sends it back for revi
 
 1. Register as an employer and land on `/employer/dashboard` with status `pending`.
 2. Complete `/employer/company`.
-3. Sign in as the seeded admin (`admin@ilo.local` / `Admin12345`).
+3. Sign in as the seeded admin (`admin@empoweewithit.local` / `Admin12345`).
 4. Open `/admin/employers` and approve the company.
 5. Sign back in as the employer — the dashboard should show `approved`.
 

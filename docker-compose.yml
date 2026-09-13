@@ -13,8 +13,8 @@ services:
       CLIENT_ORIGIN: ${CLIENT_ORIGIN:-http://localhost:8080}
       JWT_SECRET: ${JWT_SECRET:-change-this-before-a-real-launch}
       JWT_EXPIRES_IN: 7d
-      AUTH_COOKIE_NAME: ilo_session
-      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@ilo.local}
+      AUTH_COOKIE_NAME: empoweewithit_session
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@empoweewithit.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin12345}
     depends_on:
       - mongo

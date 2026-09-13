@@ -48,7 +48,7 @@ export default function AdminApplicationsPage() {
 
   return (
     <section className="page page--wide">
-      <p className="eyebrow">ILO admin</p>
+      <p className="eyebrow">EmpoweWithIT admin</p>
       <h1>Applications and placements</h1>
       <p className="lede">
         Follow every application. Hired is the placement count the programme can report.

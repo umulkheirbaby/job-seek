@@ -49,13 +49,13 @@ export default function JobsPage() {
     <section className="page page--wide">
       <p className="eyebrow">Opportunities</p>
       <h1>Browse jobs</h1>
-      <p className="lede">Only ILO-approved roles are listed here. Filter by skill, work type, or seniority.</p>
+      <p className="lede">Only EmpoweWithIT-approved roles are listed here. Filter by skill, work type, or seniority.</p>
 
       <FeedbackBanner type="error">{error}</FeedbackBanner>
       <FeedbackBanner type="ok">{message}</FeedbackBanner>
 
       <form
-        className="panel"
+        className="panel jobs-filters"
         onSubmit={(event) => {
           event.preventDefault();
           load(filters);

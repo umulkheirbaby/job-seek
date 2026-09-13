@@ -14,7 +14,7 @@ const jobInput = (overrides = {}) => ({
 });
 
 describe('jobs and applications', () => {
-  it('hides pending jobs, then lets a seeker apply after ILO approval', async () => {
+  it('hides pending jobs, then lets a seeker apply after EmpoweWithIT approval', async () => {
     const employer = api();
     const seeker = api();
     const admin = api();
@@ -57,6 +57,16 @@ describe('jobs and applications', () => {
     expect(stillHidden.status).toBe(404);
 
     await admin.patch(`/api/v1/admin/jobs/${jobId}/approve`).send({ status: 'published' });
+
+    const unverified = await seeker
+      .post(`/api/v1/jobs/${jobId}/apply`)
+      .send({ coverLetter: 'I can support youth job matching.' });
+    expect(unverified.status).toBe(403);
+
+    const profile = await seeker.get('/api/v1/profile');
+    await admin
+      .patch(`/api/v1/admin/job-seekers/${profile.body.data.profile._id}/verify`)
+      .send({ verificationStatus: 'approved' });
 
     const applied = await seeker
       .post(`/api/v1/jobs/${jobId}/apply`)

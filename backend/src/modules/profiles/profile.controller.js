@@ -1,6 +1,6 @@
 const asyncHandler = require('../../utils/asyncHandler');
 const { sendSuccess } = require('../../utils/apiResponse');
-const { validateProfileUpdate } = require('./profile.validation');
+const { validateProfileUpdate, validateVerification } = require('./profile.validation');
 const profileService = require('./profile.service');
 
 const getMe = asyncHandler(async (req, res) => {
@@ -31,4 +31,29 @@ const getPublic = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { getMe, updateMe, getPublic };
+const list = asyncHandler(async (req, res) => {
+  const status = typeof req.query.status === 'string' ? req.query.status.trim() : '';
+  const jobSeekers = await profileService.listJobSeekers(status || undefined);
+
+  sendSuccess(res, {
+    message: 'Job seekers loaded',
+    data: { jobSeekers },
+  });
+});
+
+const verify = asyncHandler(async (req, res) => {
+  const input = validateVerification(req.body);
+  const data = await profileService.verifyJobSeeker(req.params.id, input);
+  const labels = {
+    approved: 'Job seeker approved',
+    rejected: 'Job seeker rejected',
+    suspended: 'Job seeker suspended',
+  };
+
+  sendSuccess(res, {
+    message: labels[input.verificationStatus],
+    data,
+  });
+});
+
+module.exports = { getMe, updateMe, getPublic, list, verify };

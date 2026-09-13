@@ -9,6 +9,8 @@ const {
   listApplications,
   listEmployers,
   verifyEmployer,
+  listJobSeekers,
+  verifyJobSeeker,
   listJobs,
   reviewJob,
 } = require('./admin.controller');
@@ -22,6 +24,8 @@ router.get('/dashboard', getDashboard);
 router.get('/users', listUsers);
 router.patch('/users/:id/status', updateUserStatus);
 router.get('/applications', listApplications);
+router.get('/job-seekers', listJobSeekers);
+router.patch('/job-seekers/:id/verify', verifyJobSeeker);
 router.get('/employers', listEmployers);
 router.patch('/employers/:id/verify', verifyEmployer);
 router.get('/jobs', listJobs);

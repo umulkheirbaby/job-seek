@@ -66,7 +66,11 @@ const applyToJob = async (jobId, userId, input) => {
   }
 
   const profile = await Profile.findOne({ userId });
-  const cvUrl = input.cvUrl || profile?.cvUrl || '';
+  if (!profile || (profile.verificationStatus || 'pending') !== 'approved') {
+    throw new ApiError(403, 'EmpoweWithIT must verify your profile before you can apply', 'FORBIDDEN');
+  }
+
+  const cvUrl = input.cvUrl || profile.cvUrl || '';
 
   try {
     const application = await Application.create({

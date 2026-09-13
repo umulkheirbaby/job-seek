@@ -1,4 +1,5 @@
 const ApiError = require('../../utils/ApiError');
+const { VERIFICATION_STATUSES } = require('./profile.model');
 
 const URL_PATTERN = /^https?:\/\/.+/i;
 
@@ -184,4 +185,20 @@ const validateProfileUpdate = (body = {}) => {
   return update;
 };
 
-module.exports = { validateProfileUpdate };
+const text = (value) => (typeof value === 'string' ? value.trim() : '');
+
+const validateVerification = (body = {}) => {
+  const verificationStatus = typeof body.verificationStatus === 'string' ? body.verificationStatus : '';
+  if (!VERIFICATION_STATUSES.includes(verificationStatus) || verificationStatus === 'pending') {
+    throw new ApiError(400, 'Validation failed', 'VALIDATION_ERROR', {
+      verificationStatus: 'Status must be approved, rejected, or suspended',
+    });
+  }
+
+  return {
+    verificationStatus,
+    verificationNote: text(body.verificationNote),
+  };
+};
+
+module.exports = { validateProfileUpdate, validateVerification };

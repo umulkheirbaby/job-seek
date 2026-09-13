@@ -47,7 +47,7 @@ export default function DashboardPage() {
       <p className="eyebrow">Job seeker</p>
       <h1>Welcome, {user.name.split(' ')[0]}.</h1>
       <p className="lede">
-        Complete your profile, then apply for approved jobs and track each application.
+        Complete your profile and wait for EmpoweWithIT verification before you can apply.
       </p>
 
       {loading && <p className="status-note">Loading your dashboard…</p>}
@@ -60,6 +60,18 @@ export default function DashboardPage() {
       {stats && (
         <>
           <div className="status-grid">
+            <article className="card">
+              <p className="card__label">Verification</p>
+              <p className={`pill ${stats.canApply ? 'pill--ok' : 'pill--warn'}`}>
+                {stats.verificationStatus}
+              </p>
+              <p>
+                {stats.canApply
+                  ? 'You can apply for published jobs.'
+                  : 'EmpoweWithIT still needs to approve your profile before you can apply.'}
+              {profile.verificationNote ? ` Reviewer note: ${profile.verificationNote}` : ''}
+              </p>
+            </article>
             <article className="card">
               <p className="card__label">Profile completion</p>
               <p className="card__value">{stats.completion}%</p>

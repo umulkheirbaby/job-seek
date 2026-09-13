@@ -55,9 +55,9 @@ app.use((req, res, next) => {
 app.get('/api/v1', (req, res) => {
   res.json({
     success: true,
-    message: 'ILO Job Linkage API',
+    message: 'EmpoweWithIT Job Linkage API',
     data: {
-      name: 'ILO Job Linkage API',
+      name: 'EmpoweWithIT Job Linkage API',
       version: 'v1',
       sprint: 8,
     },

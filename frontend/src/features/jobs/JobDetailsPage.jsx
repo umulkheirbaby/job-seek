@@ -5,6 +5,7 @@ import { statusLabel } from '../applications/applicationLabels';
 import { applyToJob, getMyApplicationForJob } from '../applications/services/applicationApi';
 import { useApp } from '../../store/AppContext';
 import { EMPLOYMENT_TYPES, EXPERIENCE_LEVELS, WORK_TYPES, labelFor } from './jobLabels';
+import { getMyProfile } from '../profile/services/profileApi';
 import { getJob } from './services/jobApi';
 
 export default function JobDetailsPage() {
@@ -19,6 +20,8 @@ export default function JobDetailsPage() {
   const [fieldError, setFieldError] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [canApply, setCanApply] = useState(false);
+  const [verificationStatus, setVerificationStatus] = useState('pending');
 
   useEffect(() => {
     let cancelled = false;
@@ -31,9 +34,11 @@ export default function JobDetailsPage() {
         }
 
         if (user?.role === 'job_seeker') {
-          const mine = await getMyApplicationForJob(id);
+          const [mine, profile] = await Promise.all([getMyApplicationForJob(id), getMyProfile()]);
           if (!cancelled) {
             setApplication(mine.data.application);
+            setCanApply(Boolean(profile.data.stats.canApply));
+            setVerificationStatus(profile.data.stats.verificationStatus || 'pending');
           }
         }
       } catch (err) {
@@ -140,6 +145,10 @@ export default function JobDetailsPage() {
             </p>
           ) : deadlinePassed ? (
             <p>The application deadline has passed.</p>
+          ) : !canApply ? (
+            <p>
+              Your profile is {verificationStatus}. EmpoweWithIT must verify you before you can apply.
+            </p>
           ) : (
             <form className="stack" onSubmit={onApply}>
               <label>

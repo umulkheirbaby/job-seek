@@ -15,9 +15,9 @@ const registerUser = (agent, overrides = {}) =>
   });
 
 const createAdmin = async () => {
-  const email = `admin.${Date.now()}@ilo.local`;
+  const email = `admin.${Date.now()}@empoweewithit.local`;
   await User.create({
-    name: 'ILO Admin',
+    name: 'EmpoweWithIT Admin',
     email,
     password: await bcrypt.hash('Admin12345', 10),
     role: 'admin',

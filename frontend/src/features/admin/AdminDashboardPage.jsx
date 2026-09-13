@@ -39,7 +39,7 @@ export default function AdminDashboardPage() {
 
   return (
     <section className="page page--wide">
-      <p className="eyebrow">ILO admin</p>
+      <p className="eyebrow">EmpoweWithIT admin</p>
       <h1>Programme dashboard</h1>
       <p className="lede">
         Watch the path from registered talent and verified employers through applications, interviews,
@@ -62,7 +62,9 @@ export default function AdminDashboardPage() {
             <article className="card">
               <p className="card__label">Job seekers</p>
               <p className="card__value">{stats.users.jobSeekers}</p>
-              <p>Registered beneficiaries on the platform.</p>
+              <p>
+                {stats.users.verifiedJobSeekers} verified · {stats.users.pendingJobSeekers} pending
+              </p>
             </article>
             <article className="card">
               <p className="card__label">Employers</p>
@@ -72,7 +74,7 @@ export default function AdminDashboardPage() {
             <article className="card">
               <p className="card__label">Pending employers</p>
               <p className="card__value">{stats.employers.pending}</p>
-              <p>Companies waiting for ILO review.</p>
+              <p>Companies waiting for EmpoweWithIT review.</p>
             </article>
             <article className="card">
               <p className="card__label">Pending jobs</p>
@@ -97,7 +99,10 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="hero-actions">
-            <Link className="button" to="/admin/employers">
+            <Link className="button" to="/admin/job-seekers">
+              Review job seekers
+            </Link>
+            <Link className="button button--ghost" to="/admin/employers">
               Review employers
             </Link>
             <Link className="button button--ghost" to="/admin/jobs">

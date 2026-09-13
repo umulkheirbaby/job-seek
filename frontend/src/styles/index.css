@@ -149,6 +149,27 @@ a {
   line-height: 1.6;
 }
 
+.hero-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(220px, 0.95fr);
+  gap: 40px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.hero-split h1 {
+  max-width: 14ch;
+}
+
+.hero-split__image {
+  width: 100%;
+  height: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+
 .hero-actions,
 .status-grid {
   display: flex;
@@ -244,8 +265,16 @@ textarea {
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px 24px;
+}
+
+.jobs-filters {
+  gap: 22px;
+}
+
+.jobs-filters .form-grid {
+  gap: 22px 28px;
 }
 
 .stack {
@@ -380,5 +409,13 @@ code {
     flex-direction: column;
     align-items: flex-start;
     padding: 16px 0;
+  }
+
+  .hero-split {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-split__image {
+    max-height: 280px;
   }
 }

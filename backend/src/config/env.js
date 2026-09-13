@@ -9,7 +9,7 @@ const env = {
   clientOrigin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
   jwtSecret: process.env.JWT_SECRET || 'dev-only-change-me',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
-  cookieName: process.env.AUTH_COOKIE_NAME || 'ilo_session',
+  cookieName: process.env.AUTH_COOKIE_NAME || 'empoweewithit_session',
   adminEmail: process.env.ADMIN_EMAIL || '',
   adminPassword: process.env.ADMIN_PASSWORD || '',
 };

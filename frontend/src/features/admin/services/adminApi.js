@@ -26,6 +26,16 @@ export const updateUserStatus = async (id, status) => {
   return data;
 };
 
+export const listJobSeekers = async (status) => {
+  const { data } = await api.get('/admin/job-seekers', { params: status ? { status } : {} });
+  return data;
+};
+
+export const verifyJobSeeker = async (id, body) => {
+  const { data } = await api.patch(`/admin/job-seekers/${id}/verify`, body);
+  return data;
+};
+
 export const listAdminApplications = async (status) => {
   const { data } = await api.get('/admin/applications', { params: status ? { status } : {} });
   return data;

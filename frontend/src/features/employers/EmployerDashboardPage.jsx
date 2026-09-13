@@ -4,8 +4,8 @@ import { useApp } from '../../store/AppContext';
 import { getMyEmployer } from './services/employerApi';
 
 const STATUS_COPY = {
-  pending: 'ILO still needs to review this company before you can post jobs.',
-  approved: 'Your company is verified. You can submit jobs for ILO approval.',
+  pending: 'EmpoweWithIT still needs to review this company before you can post jobs.',
+  approved: 'Your company is verified. You can submit jobs for EmpoweWithIT approval.',
   rejected: 'This company was not approved. Update the profile and wait for another review.',
   suspended: 'This company is suspended and cannot post jobs.',
 };
@@ -52,7 +52,7 @@ export default function EmployerDashboardPage() {
       <p className="eyebrow">Employer</p>
       <h1>Welcome, {user.name.split(' ')[0]}.</h1>
       <p className="lede">
-        Create a company profile, then wait for ILO verification. Only approved employers will be
+        Create a company profile, then wait for EmpoweWithIT verification. Only approved employers will be
         able to publish jobs.
       </p>
 
@@ -79,7 +79,7 @@ export default function EmployerDashboardPage() {
             <article className="card">
               <p className="card__label">Jobs</p>
               <p className="card__value">{stats.jobs}</p>
-              <p>{status === 'approved' ? 'Submit a role for ILO review.' : 'Posting opens after verification.'}</p>
+              <p>{status === 'approved' ? 'Submit a role for EmpoweWithIT review.' : 'Posting opens after verification.'}</p>
             </article>
             <article className="card">
               <p className="card__label">Applications</p>

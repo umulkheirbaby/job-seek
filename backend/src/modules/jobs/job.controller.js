@@ -9,7 +9,7 @@ const create = asyncHandler(async (req, res) => {
 
   sendSuccess(res, {
     statusCode: 201,
-    message: 'Job submitted for ILO review',
+    message: 'Job submitted for EmpoweWithIT review',
     data: { job },
   });
 });

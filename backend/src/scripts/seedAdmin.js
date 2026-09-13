@@ -13,7 +13,7 @@ const seedAdmin = async () => {
   }
 
   await User.create({
-    name: 'ILO Admin',
+    name: 'EmpoweWithIT Admin',
     email: env.adminEmail,
     password: await bcrypt.hash(env.adminPassword, 10),
     role: 'admin',

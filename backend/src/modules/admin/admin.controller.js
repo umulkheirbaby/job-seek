@@ -3,6 +3,7 @@ const ApiError = require('../../utils/ApiError');
 const { sendSuccess } = require('../../utils/apiResponse');
 const { APPLICATION_STATUSES } = require('../applications/application.model');
 const employerController = require('../employers/employer.controller');
+const profileController = require('../profiles/profile.controller');
 const jobController = require('../jobs/job.controller');
 const applicationService = require('../applications/application.service');
 const adminService = require('./admin.service');
@@ -77,6 +78,8 @@ module.exports = {
   listApplications,
   listEmployers: employerController.list,
   verifyEmployer: employerController.verify,
+  listJobSeekers: profileController.list,
+  verifyJobSeeker: profileController.verify,
   listJobs: jobController.listAdmin,
   reviewJob: jobController.review,
 };

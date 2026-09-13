@@ -43,7 +43,7 @@ export default function EmployersReviewPage() {
 
   return (
     <section className="page page--wide">
-      <p className="eyebrow">ILO admin</p>
+      <p className="eyebrow">EmpoweWithIT admin</p>
       <h1>Employer verification</h1>
       <p className="lede">
         Review company profiles before they can publish jobs. This is the trust layer for job

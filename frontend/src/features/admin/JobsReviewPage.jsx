@@ -44,7 +44,7 @@ export default function JobsReviewPage() {
 
   return (
     <section className="page page--wide">
-      <p className="eyebrow">ILO admin</p>
+      <p className="eyebrow">EmpoweWithIT admin</p>
       <h1>Job approval</h1>
       <p className="lede">Approve a role before job seekers can see it on the public board.</p>
 

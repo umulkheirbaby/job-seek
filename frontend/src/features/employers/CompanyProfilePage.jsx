@@ -94,7 +94,7 @@ export default function CompanyProfilePage() {
       <p className="eyebrow">Company profile</p>
       <h1>Tell job seekers who you are.</h1>
       <p className="lede">
-        ILO reviews this information before you can post jobs. Status:{' '}
+        EmpoweWithIT reviews this information before you can post jobs. Status:{' '}
         <strong>{form.verificationStatus}</strong>
       </p>
 

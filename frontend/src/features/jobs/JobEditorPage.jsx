@@ -78,7 +78,7 @@ export default function JobEditorPage() {
       <h1>{isEdit ? 'Edit job' : 'Post a job'}</h1>
       <p className="lede">
         {isEdit
-          ? 'Saving a published or rejected job sends it back to ILO for review.'
+          ? 'Saving a published or rejected job sends it back to EmpoweWithIT for review.'
           : 'Verified employers can submit a role. It stays hidden until an admin approves it.'}
       </p>
       <FeedbackBanner type="error">{message}</FeedbackBanner>

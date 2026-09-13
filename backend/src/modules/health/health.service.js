@@ -21,7 +21,7 @@ const getHealth = async () => {
 
   return {
     status: readyState === 1 ? 'ok' : 'degraded',
-    service: 'ilo-job-linkage-api',
+    service: 'empoweewithit-job-linkage-api',
     sprint: 8,
     environment: env.nodeEnv,
     uptimeSeconds: Math.round(process.uptime()),

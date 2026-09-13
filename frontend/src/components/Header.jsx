@@ -14,8 +14,8 @@ export default function Header() {
     <header className="site-header">
       <div className="site-header__inner">
         <NavLink to="/" className="brand">
-          <span className="brand__mark">ILO</span>
-          Job Linkage
+          <span className="brand__mark">EW</span>
+          EmpoweWithIT
         </NavLink>
         <nav className="site-nav" aria-label="Primary">
           <NavLink to="/" end>
@@ -41,10 +41,12 @@ export default function Header() {
               <NavLink to="/admin" end>
                 Dashboard
               </NavLink>
+              <NavLink to="/admin/job-seekers">Seekers</NavLink>
               <NavLink to="/admin/users">Users</NavLink>
               <NavLink to="/admin/employers">Employers</NavLink>
               <NavLink to="/admin/jobs">Jobs</NavLink>
               <NavLink to="/admin/applications">Placements</NavLink>
+              <NavLink to="/status">Platform status</NavLink>
             </>
           )}
           {user ? (
@@ -55,10 +57,7 @@ export default function Header() {
               </button>
             </>
           ) : (
-            <>
-              <NavLink to="/status">Platform status</NavLink>
-              <NavLink to="/login">Sign in</NavLink>
-            </>
+            <NavLink to="/login">Sign in</NavLink>
           )}
         </nav>
       </div>

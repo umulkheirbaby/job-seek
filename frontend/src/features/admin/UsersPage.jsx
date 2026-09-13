@@ -76,7 +76,7 @@ export default function UsersPage() {
 
   return (
     <section className="page page--wide">
-      <p className="eyebrow">ILO admin</p>
+      <p className="eyebrow">EmpoweWithIT admin</p>
       <h1>User management</h1>
       <p className="lede">
         Find accounts and suspend people who should not sign in. Administrator accounts stay

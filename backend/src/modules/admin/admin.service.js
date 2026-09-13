@@ -1,6 +1,7 @@
 const { User } = require('../users/user.model');
 const { Employer } = require('../employers/employer.model');
 const { Job } = require('../jobs/job.model');
+const { Profile } = require('../profiles/profile.model');
 const { Application, APPLICATION_STATUSES } = require('../applications/application.model');
 
 const countBy = async (Model, field, values) => {
@@ -19,6 +20,7 @@ const getDashboard = async () => {
     totalUsers,
     usersByRole,
     usersByStatus,
+    seekersByStatus,
     employersByStatus,
     jobsByStatus,
     remoteJobs,
@@ -27,6 +29,7 @@ const getDashboard = async () => {
     User.countDocuments(),
     countBy(User, 'role', ['job_seeker', 'employer', 'admin']),
     countBy(User, 'status', ['active', 'inactive', 'suspended']),
+    countBy(Profile, 'verificationStatus', ['pending', 'approved', 'rejected', 'suspended']),
     countBy(Employer, 'verificationStatus', ['pending', 'approved', 'rejected', 'suspended']),
     countBy(Job, 'status', ['pending', 'published', 'closed', 'rejected']),
     Job.countDocuments({ workType: 'remote' }),
@@ -46,6 +49,8 @@ const getDashboard = async () => {
       active: usersByStatus.active,
       inactive: usersByStatus.inactive,
       suspended: usersByStatus.suspended,
+      pendingJobSeekers: seekersByStatus.pending,
+      verifiedJobSeekers: seekersByStatus.approved,
     },
     employers: {
       total: employers,

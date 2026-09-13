@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const VERIFICATION_STATUSES = ['pending', 'approved', 'rejected', 'suspended'];
+
 const educationSchema = new mongoose.Schema(
   {
     institution: { type: String, trim: true, default: '' },
@@ -41,6 +43,12 @@ const profileSchema = new mongoose.Schema(
     experience: { type: [experienceSchema], default: [] },
     cvUrl: { type: String, trim: true, default: '' },
     portfolioUrl: { type: String, trim: true, default: '' },
+    verificationStatus: {
+      type: String,
+      enum: VERIFICATION_STATUSES,
+      default: 'pending',
+    },
+    verificationNote: { type: String, trim: true, default: '' },
   },
   { timestamps: true }
 );
@@ -59,6 +67,7 @@ const computeProfileStats = (profile) => {
   ];
 
   const filled = checks.filter(Boolean).length;
+  const verificationStatus = profile.verificationStatus || 'pending';
 
   return {
     completion: Math.round((filled / checks.length) * 100),
@@ -67,6 +76,8 @@ const computeProfileStats = (profile) => {
     experience: profile.experience.length,
     hasCv: Boolean(profile.cvUrl),
     hasPortfolio: Boolean(profile.portfolioUrl),
+    verificationStatus,
+    canApply: verificationStatus === 'approved',
   };
 };
 
@@ -84,10 +95,12 @@ const toPublicProfile = (profile) => ({
   experience: profile.experience || [],
   cvUrl: profile.cvUrl || '',
   portfolioUrl: profile.portfolioUrl || '',
+  verificationStatus: profile.verificationStatus || 'pending',
+  verificationNote: profile.verificationNote || '',
   createdAt: profile.createdAt,
   updatedAt: profile.updatedAt,
 });
 
 const Profile = mongoose.model('Profile', profileSchema);
 
-module.exports = { Profile, computeProfileStats, toPublicProfile };
+module.exports = { Profile, VERIFICATION_STATUSES, computeProfileStats, toPublicProfile };

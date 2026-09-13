@@ -1,8 +1,8 @@
 {
-  "name": "ilo-job-linkage",
+  "name": "empoweewithit-job-linkage",
   "private": true,
   "version": "0.1.0",
-  "description": "ILO / E for Impact job linkage platform",
+  "description": "EmpoweWithIT job linkage platform",
   "scripts": {
     "install:all": "npm install --prefix backend && npm install --prefix frontend",
     "dev:backend": "npm run dev --prefix backend",

@@ -20,7 +20,7 @@ export const homePathFor = (user) => {
 
 export const homeLabelFor = (user) => {
   if (!user) {
-    return 'Check platform status';
+    return 'Browse jobs';
   }
 
   if (user.role === 'admin') {
