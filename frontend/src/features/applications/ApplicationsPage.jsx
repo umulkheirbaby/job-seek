@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import FeedbackBanner from '../../components/FeedbackBanner';
+import ApplicationDocumentButton from './ApplicationDocumentButton';
 import { statusLabel } from './applicationLabels';
 import { listApplications } from './services/applicationApi';
 
@@ -63,6 +64,7 @@ export default function ApplicationsPage() {
               {statusLabel(item.status)}
             </p>
             <p>Applied {String(item.createdAt).slice(0, 10)}</p>
+            <ApplicationDocumentButton application={item} />
             <Link className="button" to={`/jobs/${item.jobId}`}>
               View job
             </Link>

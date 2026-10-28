@@ -39,7 +39,7 @@ export default function LoginPage() {
     <section className="page page--narrow">
       <p className="eyebrow">Welcome back</p>
       <h1>Sign in</h1>
-      <p className="lede">Use the email and password from your account. The session is stored in an httpOnly cookie.</p>
+      <p className="lede">Use the email and password from your account.</p>
       {message && (
         <div className="banner banner--error" role="alert">
           {message}

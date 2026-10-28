@@ -80,6 +80,7 @@ module.exports = {
   verifyEmployer: employerController.verify,
   listJobSeekers: profileController.list,
   verifyJobSeeker: profileController.verify,
+  downloadJobSeekerDocument: profileController.downloadJobSeekerDocument,
   listJobs: jobController.listAdmin,
   reviewJob: jobController.review,
 };

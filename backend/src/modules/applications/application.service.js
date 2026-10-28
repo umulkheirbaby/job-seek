@@ -5,6 +5,12 @@ const { Job, toPublicJob } = require('../jobs/job.model');
 const { Employer } = require('../employers/employer.model');
 const { User } = require('../users/user.model');
 const { Profile } = require('../profiles/profile.model');
+const {
+  copyCombinedDocument,
+  removeStoredDocument,
+  readStoredDocument,
+  sanitizeDownloadName,
+} = require('./applicationDocument');
 
 const isDeadlinePassed = (deadline) => {
   if (!deadline) {
@@ -70,6 +76,12 @@ const applyToJob = async (jobId, userId, input) => {
     throw new ApiError(403, 'EmpoweWithIT must verify your profile before you can apply', 'FORBIDDEN');
   }
 
+  if (!profile.documentStoredName) {
+    throw new ApiError(400, 'Validation failed', 'VALIDATION_ERROR', {
+      documents: 'Upload a combined PDF on your profile before you apply',
+    });
+  }
+
   const cvUrl = input.cvUrl || profile.cvUrl || '';
 
   try {
@@ -80,6 +92,28 @@ const applyToJob = async (jobId, userId, input) => {
       cvUrl,
       status: 'applied',
     });
+
+    try {
+      const copied = await copyCombinedDocument({
+        fromKind: 'profiles',
+        fromName: profile.documentStoredName,
+        toKind: 'applications',
+        toId: application._id,
+      });
+      application.documentStoredName = copied.storedName;
+      application.documentOriginalName = profile.documentOriginalName;
+      application.documentSize = profile.documentSize;
+      application.documentUrl = copied.url || '';
+      await application.save();
+    } catch (error) {
+      await removeStoredDocument(`${application._id}.pdf`);
+      if (application.documentStoredName) {
+        await removeStoredDocument(application.documentStoredName);
+      }
+      await Application.deleteOne({ _id: application._id });
+      throw error;
+    }
+
     return decorate(application);
   } catch (error) {
     if (error.code === 11000) {
@@ -169,6 +203,53 @@ const countApplicationsForEmployer = async (employerId) => {
 
 const countApplicationsForCandidate = async (userId) => Application.countDocuments({ candidateId: userId });
 
+const assertCanViewApplication = async (application, user) => {
+  if (user.role === 'admin') {
+    return;
+  }
+
+  if (user.role === 'job_seeker' && String(application.candidateId) === String(user._id)) {
+    return;
+  }
+
+  if (user.role === 'employer') {
+    const employer = await getEmployerForUser(user._id);
+    const job = await Job.findById(application.jobId);
+    if (job && String(job.employerId) === String(employer._id)) {
+      return;
+    }
+  }
+
+  throw new ApiError(403, 'You do not have permission to perform this action', 'FORBIDDEN');
+};
+
+const getApplicationDocument = async (id, user) => {
+  if (!mongoose.isValidObjectId(id)) {
+    throw new ApiError(404, 'Application not found', 'NOT_FOUND');
+  }
+
+  const application = await Application.findById(id);
+  if (!application) {
+    throw new ApiError(404, 'Application not found', 'NOT_FOUND');
+  }
+
+  await assertCanViewApplication(application, user);
+
+  if (!application.documentStoredName) {
+    throw new ApiError(404, 'No combined document was uploaded for this application', 'NOT_FOUND');
+  }
+
+  const stored = await readStoredDocument('applications', application.documentStoredName);
+  if (!stored) {
+    throw new ApiError(404, 'No combined document was uploaded for this application', 'NOT_FOUND');
+  }
+
+  return {
+    ...stored,
+    downloadName: sanitizeDownloadName(application.documentOriginalName || 'combined-documents.pdf'),
+  };
+};
+
 module.exports = {
   applyToJob,
   getMyApplicationForJob,
@@ -177,6 +258,7 @@ module.exports = {
   listEmployerApplications,
   listAllApplications,
   updateStatus,
+  getApplicationDocument,
   countApplicationsForEmployer,
   countApplicationsForCandidate,
 };

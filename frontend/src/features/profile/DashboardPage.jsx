@@ -68,7 +68,9 @@ export default function DashboardPage() {
               <p>
                 {stats.canApply
                   ? 'You can apply for published jobs.'
-                  : 'EmpoweWithIT still needs to approve your profile before you can apply.'}
+                  : stats.verificationStatus === 'approved'
+                    ? 'Upload a combined PDF on your profile before you apply.'
+                    : 'EmpoweWithIT still needs to approve your profile before you can apply.'}
               {profile.verificationNote ? ` Reviewer note: ${profile.verificationNote}` : ''}
               </p>
             </article>
@@ -95,11 +97,11 @@ export default function DashboardPage() {
               <p>{stats.experience ? 'Roles on your profile' : 'Add work or volunteer history.'}</p>
             </article>
             <article className="card">
-              <p className="card__label">CV</p>
-              <p className={`pill ${stats.hasCv ? 'pill--ok' : 'pill--warn'}`}>
-                {stats.hasCv ? 'Added' : 'Missing'}
+              <p className="card__label">Combined PDF</p>
+              <p className={`pill ${stats.hasDocument ? 'pill--ok' : 'pill--warn'}`}>
+                {stats.hasDocument ? 'Added' : 'Missing'}
               </p>
-              <p>Store a public CV link for now.</p>
+              <p>{stats.hasDocument ? 'Reused on every application.' : 'Upload CV, certificates, and ID as one PDF.'}</p>
             </article>
             <article className="card">
               <p className="card__label">Portfolio</p>

@@ -12,6 +12,10 @@ const env = {
   cookieName: process.env.AUTH_COOKIE_NAME || 'empoweewithit_session',
   adminEmail: process.env.ADMIN_EMAIL || '',
   adminPassword: process.env.ADMIN_PASSWORD || '',
+  uploadDir: process.env.UPLOAD_DIR || path.join(__dirname, '../../uploads'),
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
 };
 
 if (env.nodeEnv === 'production') {

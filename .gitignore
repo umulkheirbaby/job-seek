@@ -8,3 +8,11 @@ Thumbs.db
 .vscode/
 .idea/
 ~$*
+backend/uploads/*
+!backend/uploads/.gitkeep
+!backend/uploads/applications/
+backend/uploads/applications/*
+!backend/uploads/applications/.gitkeep
+!backend/uploads/profiles/
+backend/uploads/profiles/*
+!backend/uploads/profiles/.gitkeep

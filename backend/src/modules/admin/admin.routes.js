@@ -11,6 +11,7 @@ const {
   verifyEmployer,
   listJobSeekers,
   verifyJobSeeker,
+  downloadJobSeekerDocument,
   listJobs,
   reviewJob,
 } = require('./admin.controller');
@@ -25,6 +26,7 @@ router.get('/users', listUsers);
 router.patch('/users/:id/status', updateUserStatus);
 router.get('/applications', listApplications);
 router.get('/job-seekers', listJobSeekers);
+router.get('/job-seekers/:id/document', downloadJobSeekerDocument);
 router.patch('/job-seekers/:id/verify', verifyJobSeeker);
 router.get('/employers', listEmployers);
 router.patch('/employers/:id/verify', verifyEmployer);

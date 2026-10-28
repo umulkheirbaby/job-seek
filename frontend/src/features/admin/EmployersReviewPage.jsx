@@ -81,7 +81,11 @@ export default function EmployersReviewPage() {
             </p>
             {employer.website && (
               <p>
-                <a href={employer.website} target="_blank" rel="noreferrer">
+                <a
+                  href={/^https?:\/\//i.test(employer.website) ? employer.website : `https://${employer.website}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   {employer.website}
                 </a>
               </p>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import FeedbackBanner from '../../components/FeedbackBanner';
-import { getMyProfile, updateMyProfile } from './services/profileApi';
+import { getMyProfile, updateMyProfile, uploadProfileDocuments, openProfileDocument } from './services/profileApi';
 
 const emptyEducation = () => ({
   institution: '',
@@ -59,6 +59,9 @@ export default function ProfilePage() {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [documentFiles, setDocumentFiles] = useState([]);
+  const [documentMeta, setDocumentMeta] = useState({ hasDocument: false, originalName: '' });
+  const [uploadingDocument, setUploadingDocument] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -68,6 +71,10 @@ export default function ProfilePage() {
         const result = await getMyProfile();
         if (!cancelled) {
           setForm(toForm(result.data.profile));
+          setDocumentMeta({
+            hasDocument: Boolean(result.data.profile.hasDocument),
+            originalName: result.data.profile.documentOriginalName || '',
+          });
         }
       } catch (error) {
         if (!cancelled) {
@@ -163,6 +170,38 @@ export default function ProfilePage() {
     );
   };
 
+  const onUploadDocument = async (event) => {
+    event.preventDefault();
+    if (!documentFiles.length) {
+      setSuccess('');
+      setMessage('');
+      setErrors({
+        documents: 'Choose one combined PDF, or several PDFs to merge',
+      });
+      return;
+    }
+
+    setUploadingDocument(true);
+    setMessage('');
+    setSuccess('');
+    setErrors({});
+
+    try {
+      const result = await uploadProfileDocuments(documentFiles);
+      setDocumentMeta({
+        hasDocument: Boolean(result.data.profile.hasDocument),
+        originalName: result.data.profile.documentOriginalName || '',
+      });
+      setDocumentFiles([]);
+      setSuccess(`${result.message}. Completion is now ${result.data.stats.completion}%.`);
+    } catch (error) {
+      setMessage(error.message);
+      setErrors(error.payload?.errors || {});
+    } finally {
+      setUploadingDocument(false);
+    }
+  };
+
   const onSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -189,8 +228,8 @@ export default function ProfilePage() {
       <p className="eyebrow">Professional profile</p>
       <h1>Tell employers who you are.</h1>
       <p className="lede">
-        Add skills, education, experience, and public links. File uploads come later — a URL is
-        enough for the MVP.
+        Add skills, education, experience, and a combined PDF. We attach that PDF every time you apply, so
+        you only upload it once.
       </p>
 
       <FeedbackBanner type="error">{message}</FeedbackBanner>
@@ -402,6 +441,38 @@ export default function ProfilePage() {
             Add experience
           </button>
           {errors.experience && <span className="field-error">{errors.experience}</span>}
+        </fieldset>
+
+        <fieldset className="stack">
+          <legend>Combined document (PDF)</legend>
+          <p className="field-hint">
+            Upload one combined PDF, or several PDFs (CV, certificates, ID). They are merged and reused on
+            every application.
+          </p>
+          {documentMeta.hasDocument && (
+            <div className="stack">
+              <p className="field-hint">Current file: {documentMeta.originalName || 'combined-documents.pdf'}</p>
+              <button className="button button--ghost" type="button" onClick={() => openProfileDocument()}>
+                View combined PDF
+              </button>
+            </div>
+          )}
+          <label>
+            {documentMeta.hasDocument ? 'Replace PDF' : 'Upload PDF'}
+            <input
+              type="file"
+              accept="application/pdf,.pdf"
+              multiple
+              onChange={(event) => setDocumentFiles(Array.from(event.target.files || []))}
+            />
+          </label>
+          {documentFiles.length > 0 && (
+            <span className="field-hint">{documentFiles.map((file) => file.name).join(', ')}</span>
+          )}
+          {errors.documents && <span className="field-error">{errors.documents}</span>}
+          <button className="button button--ghost" type="button" onClick={onUploadDocument} disabled={uploadingDocument}>
+            {uploadingDocument ? 'Uploading…' : documentMeta.hasDocument ? 'Replace combined PDF' : 'Save combined PDF'}
+          </button>
         </fieldset>
 
         <div className="form-grid">

@@ -16,6 +16,12 @@ services:
       AUTH_COOKIE_NAME: empoweewithit_session
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@empoweewithit.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin12345}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - api-uploads:/app/uploads
     depends_on:
       - mongo
 
@@ -28,3 +34,4 @@ services:
 
 volumes:
   mongo-data:
+  api-uploads:

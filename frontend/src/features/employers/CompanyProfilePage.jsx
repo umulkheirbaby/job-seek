@@ -114,7 +114,7 @@ export default function CompanyProfilePage() {
           </label>
           <label>
             Website
-            <input name="website" value={form.website} onChange={onChange} placeholder="https://" />
+            <input name="website" value={form.website} onChange={onChange} placeholder="company.com or https://company.com" />
             {errors.website && <span className="field-error">{errors.website}</span>}
           </label>
           <label>

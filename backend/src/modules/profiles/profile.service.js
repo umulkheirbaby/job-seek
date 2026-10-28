@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const ApiError = require('../../utils/ApiError');
 const { User } = require('../users/user.model');
 const { Profile, computeProfileStats, toPublicProfile } = require('./profile.model');
+const { saveCombinedDocument, readStoredDocument, sanitizeDownloadName } = require('../../utils/combinedPdf');
 
 const ensureProfile = async (userId) => {
   let profile = await Profile.findOne({ userId });
@@ -74,6 +75,55 @@ const verifyJobSeeker = async (id, input) => {
   };
 };
 
+const saveMyDocument = async (userId, files) => {
+  const profile = await ensureProfile(userId);
+  const saved = await saveCombinedDocument('profiles', profile._id, files);
+  profile.documentStoredName = saved.storedName;
+  profile.documentOriginalName = saved.originalName;
+  profile.documentSize = saved.size;
+  profile.documentUrl = saved.url || '';
+  await profile.save();
+
+  return {
+    profile: toPublicProfile(profile),
+    stats: computeProfileStats(profile),
+  };
+};
+
+const getMyDocument = async (userId) => {
+  const profile = await ensureProfile(userId);
+  return getProfileDocumentFile(profile);
+};
+
+const getJobSeekerDocument = async (profileId) => {
+  if (!mongoose.isValidObjectId(profileId)) {
+    throw new ApiError(404, 'Job seeker not found', 'NOT_FOUND');
+  }
+
+  const profile = await Profile.findById(profileId);
+  if (!profile) {
+    throw new ApiError(404, 'Job seeker not found', 'NOT_FOUND');
+  }
+
+  return getProfileDocumentFile(profile);
+};
+
+const getProfileDocumentFile = async (profile) => {
+  if (!profile.documentStoredName) {
+    throw new ApiError(404, 'No combined document was uploaded for this profile', 'NOT_FOUND');
+  }
+
+  const stored = await readStoredDocument('profiles', profile.documentStoredName);
+  if (!stored) {
+    throw new ApiError(404, 'No combined document was uploaded for this profile', 'NOT_FOUND');
+  }
+
+  return {
+    ...stored,
+    downloadName: sanitizeDownloadName(profile.documentOriginalName || 'combined-documents.pdf'),
+  };
+};
+
 const getPublicProfile = async (userId) => {
   if (!mongoose.isValidObjectId(userId)) {
     throw new ApiError(404, 'Job seeker not found', 'NOT_FOUND');
@@ -104,6 +154,9 @@ module.exports = {
   ensureProfile,
   getMyProfile,
   updateMyProfile,
+  saveMyDocument,
+  getMyDocument,
+  getJobSeekerDocument,
   getPublicProfile,
   listJobSeekers,
   verifyJobSeeker,

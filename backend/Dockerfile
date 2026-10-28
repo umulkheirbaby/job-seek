@@ -6,6 +6,7 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
 COPY src ./src
+RUN mkdir -p /app/uploads/applications /app/uploads/profiles
 
 ENV NODE_ENV=production
 EXPOSE 5000

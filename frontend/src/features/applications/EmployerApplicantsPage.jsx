@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import FeedbackBanner from '../../components/FeedbackBanner';
+import ApplicationDocumentButton from './ApplicationDocumentButton';
 import { APPLICATION_STATUSES, statusLabel } from './applicationLabels';
 import { listJobApplications, updateApplicationStatus } from './services/applicationApi';
 
@@ -71,13 +72,7 @@ export default function EmployerApplicantsPage() {
             <p>{item.candidate?.email}</p>
             <p>{item.profile?.skills?.join(', ') || 'No skills listed'}</p>
             {item.coverLetter && <p>{item.coverLetter}</p>}
-            {item.cvUrl && (
-              <p>
-                <a href={item.cvUrl} target="_blank" rel="noreferrer">
-                  View CV
-                </a>
-              </p>
-            )}
+            <ApplicationDocumentButton application={item} />
             <label>
               Update status
               <select value={item.status} onChange={(event) => onStatus(item._id, event.target.value)}>

@@ -2,6 +2,7 @@ const asyncHandler = require('../../utils/asyncHandler');
 const { sendSuccess } = require('../../utils/apiResponse');
 const { validateProfileUpdate, validateVerification } = require('./profile.validation');
 const profileService = require('./profile.service');
+const { sendPdf } = require('../../utils/combinedPdf');
 
 const getMe = asyncHandler(async (req, res) => {
   const data = await profileService.getMyProfile(req.user._id);
@@ -31,6 +32,25 @@ const getPublic = asyncHandler(async (req, res) => {
   });
 });
 
+const uploadDocument = asyncHandler(async (req, res) => {
+  const data = await profileService.saveMyDocument(req.user._id, req.files || []);
+
+  sendSuccess(res, {
+    message: 'Combined PDF saved to your profile',
+    data,
+  });
+});
+
+const downloadDocument = asyncHandler(async (req, res) => {
+  const file = await profileService.getMyDocument(req.user._id);
+  sendPdf(res, file);
+});
+
+const downloadJobSeekerDocument = asyncHandler(async (req, res) => {
+  const file = await profileService.getJobSeekerDocument(req.params.id);
+  sendPdf(res, file);
+});
+
 const list = asyncHandler(async (req, res) => {
   const status = typeof req.query.status === 'string' ? req.query.status.trim() : '';
   const jobSeekers = await profileService.listJobSeekers(status || undefined);
@@ -56,4 +76,4 @@ const verify = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { getMe, updateMe, getPublic, list, verify };
+module.exports = { getMe, updateMe, getPublic, list, verify, uploadDocument, downloadDocument, downloadJobSeekerDocument };

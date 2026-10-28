@@ -32,12 +32,16 @@ Backend tests use a separate MongoDB database: `ilo-job-linkage-test`.
 
 ## Deploy
 
+Local Docker:
+
 ```bash
 set JWT_SECRET=a-long-random-string
 docker compose up --build
 ```
 
 The web container serves the React build and proxies `/api` to the API. Point `CLIENT_ORIGIN` at the public site URL in a real environment.
+
+For Render (API web service + frontend static site + Atlas + Cloudinary), follow [RENDER.md](RENDER.md). You can also use the Blueprint file `render.yaml`.
 
 ## Sprint 7 vertical slice
 

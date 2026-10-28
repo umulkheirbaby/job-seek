@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import FeedbackBanner from '../../components/FeedbackBanner';
 import { statusLabel } from '../applications/applicationLabels';
+import ApplicationDocumentButton from '../applications/ApplicationDocumentButton';
 import { applyToJob, getMyApplicationForJob } from '../applications/services/applicationApi';
 import { useApp } from '../../store/AppContext';
 import { EMPLOYMENT_TYPES, EXPERIENCE_LEVELS, WORK_TYPES, labelFor } from './jobLabels';
@@ -17,11 +18,13 @@ export default function JobDetailsPage() {
   const [coverLetter, setCoverLetter] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [fieldError, setFieldError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [canApply, setCanApply] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState('pending');
+  const [hasProfileDocument, setHasProfileDocument] = useState(false);
+  const [profileDocumentName, setProfileDocumentName] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -39,6 +42,8 @@ export default function JobDetailsPage() {
             setApplication(mine.data.application);
             setCanApply(Boolean(profile.data.stats.canApply));
             setVerificationStatus(profile.data.stats.verificationStatus || 'pending');
+            setHasProfileDocument(Boolean(profile.data.profile.hasDocument));
+            setProfileDocumentName(profile.data.profile.documentOriginalName || 'combined-documents.pdf');
           }
         }
       } catch (err) {
@@ -64,7 +69,15 @@ export default function JobDetailsPage() {
     setSubmitting(true);
     setError('');
     setSuccess('');
-    setFieldError('');
+    setFieldErrors({});
+
+    if (verificationStatus === 'approved' && !hasProfileDocument) {
+      setFieldErrors({
+        documents: 'Upload a combined PDF on your profile before you apply',
+      });
+      setSubmitting(false);
+      return;
+    }
 
     try {
       const result = await applyToJob(id, { coverLetter });
@@ -72,7 +85,7 @@ export default function JobDetailsPage() {
       setSuccess(result.message);
     } catch (err) {
       setError(err.message);
-      setFieldError(err.payload?.errors?.coverLetter || '');
+      setFieldErrors(err.payload?.errors || {});
     } finally {
       setSubmitting(false);
     }
@@ -139,15 +152,23 @@ export default function JobDetailsPage() {
         <article className="card">
           <p className="card__label">Apply</p>
           {application ? (
-            <p>
-              You applied. Current status:{' '}
-              <strong>{statusLabel(application.status)}</strong>
-            </p>
+            <div className="stack">
+              <p>
+                You applied. Current status:{' '}
+                <strong>{statusLabel(application.status)}</strong>
+              </p>
+              <ApplicationDocumentButton application={application} />
+            </div>
           ) : deadlinePassed ? (
             <p>The application deadline has passed.</p>
-          ) : !canApply ? (
+          ) : !canApply && verificationStatus !== 'approved' ? (
             <p>
               Your profile is {verificationStatus}. EmpoweWithIT must verify you before you can apply.
+            </p>
+          ) : !hasProfileDocument ? (
+            <p>
+              Add a combined PDF on your <Link to="/profile">profile</Link>. We attach that file every time
+              you apply.
             </p>
           ) : (
             <form className="stack" onSubmit={onApply}>
@@ -159,8 +180,13 @@ export default function JobDetailsPage() {
                   onChange={(event) => setCoverLetter(event.target.value)}
                   placeholder="Why you are a fit for this role"
                 />
-                {fieldError && <span className="field-error">{fieldError}</span>}
+                {fieldErrors.coverLetter && <span className="field-error">{fieldErrors.coverLetter}</span>}
               </label>
+              <p className="field-hint">
+                We will attach <strong>{profileDocumentName}</strong> from your profile.{' '}
+                <Link to="/profile">Update it</Link>
+              </p>
+              {fieldErrors.documents && <span className="field-error">{fieldErrors.documents}</span>}
               <button className="button" type="submit" disabled={submitting}>
                 {submitting ? 'Submitting…' : 'Submit application'}
               </button>

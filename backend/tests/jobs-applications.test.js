@@ -1,4 +1,5 @@
-const { api, registerUser, createAdmin, login } = require('./helpers');
+const { api, registerUser, createAdmin, login, makePdf } = require('./helpers');
+const { PDFDocument } = require('pdf-lib');
 
 const jobInput = (overrides = {}) => ({
   title: 'Junior React Developer',
@@ -68,11 +69,62 @@ describe('jobs and applications', () => {
       .patch(`/api/v1/admin/job-seekers/${profile.body.data.profile._id}/verify`)
       .send({ verificationStatus: 'approved' });
 
+    const missingPdf = await seeker
+      .post(`/api/v1/jobs/${jobId}/apply`)
+      .send({ coverLetter: 'I can support youth job matching.' });
+    expect(missingPdf.status).toBe(400);
+    expect(missingPdf.body.errors.documents).toMatch(/profile/i);
+
+    const cv = await makePdf('Curriculum vitae');
+    const certificates = await makePdf('Certificates');
+    const uploaded = await seeker
+      .post('/api/v1/profile/document')
+      .attach('documents', cv, { filename: 'cv.pdf', contentType: 'application/pdf' })
+      .attach('documents', certificates, {
+        filename: 'certificates.pdf',
+        contentType: 'application/pdf',
+      });
+    expect(uploaded.status).toBe(200);
+    expect(uploaded.body.data.profile.hasDocument).toBe(true);
+    expect(uploaded.body.data.stats.hasDocument).toBe(true);
+
+    const adminPdf = await admin.get(
+      `/api/v1/admin/job-seekers/${profile.body.data.profile._id}/document`
+    );
+    expect(adminPdf.status).toBe(200);
+
+    const profilePdf = await seeker.get('/api/v1/profile/document');
+    expect(profilePdf.status).toBe(200);
+    const stored = await PDFDocument.load(profilePdf.body);
+    expect(stored.getPageCount()).toBe(2);
+
     const applied = await seeker
       .post(`/api/v1/jobs/${jobId}/apply`)
       .send({ coverLetter: 'I can support youth job matching.' });
     expect(applied.status).toBe(201);
     expect(applied.body.data.application.status).toBe('applied');
+    expect(applied.body.data.application.hasDocument).toBe(true);
+    expect(applied.body.data.application.documentOriginalName).toBe('combined-documents.pdf');
+
+    const document = await seeker.get(
+      `/api/v1/applications/${applied.body.data.application._id}/document`
+    );
+    expect(document.status).toBe(200);
+    expect(document.headers['content-type']).toMatch(/pdf/);
+    const combined = await PDFDocument.load(document.body);
+    expect(combined.getPageCount()).toBe(2);
+
+    const employerCopy = await employer.get(
+      `/api/v1/applications/${applied.body.data.application._id}/document`
+    );
+    expect(employerCopy.status).toBe(200);
+
+    const outsider = api();
+    await registerUser(outsider, { email: `seeker.other.${Date.now()}@example.com` });
+    const blocked = await outsider.get(
+      `/api/v1/applications/${applied.body.data.application._id}/document`
+    );
+    expect(blocked.status).toBe(403);
 
     const duplicate = await seeker
       .post(`/api/v1/jobs/${jobId}/apply`)

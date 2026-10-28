@@ -43,8 +43,8 @@ export default function RegisterPage() {
       <p className="eyebrow">Create access</p>
       <h1>Create an account</h1>
       <p className="lede">
-        Register as a job seeker or employer. Passwords are hashed on the server and the session cookie
-        is httpOnly.
+        Register as a job seeker or employer.
+        
       </p>
       {message && (
         <div className="banner banner--error" role="alert">

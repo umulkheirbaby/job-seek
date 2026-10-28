@@ -1,7 +1,7 @@
 import api from '../../../services/axios';
 
-export const applyToJob = async (jobId, body) => {
-  const { data } = await api.post(`/jobs/${jobId}/apply`, body);
+export const applyToJob = async (jobId, { coverLetter } = {}) => {
+  const { data } = await api.post(`/jobs/${jobId}/apply`, { coverLetter: coverLetter || '' });
   return data;
 };
 
@@ -23,4 +23,18 @@ export const listJobApplications = async (jobId) => {
 export const updateApplicationStatus = async (id, status) => {
   const { data } = await api.patch(`/applications/${id}/status`, { status });
   return data;
+};
+
+export const openApplicationDocument = async (id) => {
+  const base = import.meta.env.VITE_API_URL || '/api/v1';
+  if (typeof window !== 'undefined' && String(base).startsWith('/')) {
+    window.open(`${base}/applications/${id}/document`, '_blank', 'noopener,noreferrer');
+    return;
+  }
+
+  const response = await api.get(`/applications/${id}/document`, { responseType: 'blob' });
+  const blob = new Blob([response.data], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank', 'noopener,noreferrer');
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
 };

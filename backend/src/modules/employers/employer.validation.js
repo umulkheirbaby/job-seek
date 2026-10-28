@@ -1,25 +1,25 @@
 const ApiError = require('../../utils/ApiError');
 const { VERIFICATION_STATUSES } = require('./employer.model');
 
-const URL_PATTERN = /^https?:\/\/.+/i;
+const WEBSITE_PATTERN = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(\/[^\s]*)?$/i;
 
-const optionalUrl = (value, field) => {
+const optionalWebsite = (value) => {
   if (value === undefined) {
     return undefined;
   }
 
-  const url = typeof value === 'string' ? value.trim() : '';
-  if (!url) {
+  const website = typeof value === 'string' ? value.trim() : '';
+  if (!website) {
     return '';
   }
 
-  if (!URL_PATTERN.test(url)) {
+  if (!WEBSITE_PATTERN.test(website)) {
     throw new ApiError(400, 'Validation failed', 'VALIDATION_ERROR', {
-      [field]: 'Use a full URL starting with http:// or https://',
+      website: 'Enter a valid website, with or without https://',
     });
   }
 
-  return url;
+  return website;
 };
 
 const text = (value) => (typeof value === 'string' ? value.trim() : '');
@@ -41,7 +41,7 @@ const validateEmployerUpdate = (body = {}) => {
     update.description = description;
   }
 
-  const website = optionalUrl(body.website, 'website');
+  const website = optionalWebsite(body.website);
   if (website !== undefined) {
     update.website = website;
   }

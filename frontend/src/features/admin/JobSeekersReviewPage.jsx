@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import FeedbackBanner from '../../components/FeedbackBanner';
-import { listJobSeekers, verifyJobSeeker } from './services/adminApi';
+import { listJobSeekers, openJobSeekerDocument, verifyJobSeeker } from './services/adminApi';
 
 export default function JobSeekersReviewPage() {
   const [items, setItems] = useState([]);
@@ -80,6 +80,11 @@ export default function JobSeekersReviewPage() {
             </p>
             <p>{profile.skills?.join(', ') || 'No skills listed'}</p>
             <p>Profile {stats.completion}% complete</p>
+            {profile.hasDocument && (
+              <button className="button button--ghost" type="button" onClick={() => openJobSeekerDocument(profile._id)}>
+                View combined PDF
+              </button>
+            )}
             {profile.verificationNote && <p>Reviewer note: {profile.verificationNote}</p>}
             <div className="hero-actions">
               <button className="button" type="button" onClick={() => onVerify(profile._id, 'approved')}>

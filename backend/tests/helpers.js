@@ -1,5 +1,6 @@
 const request = require('supertest');
 const bcrypt = require('bcryptjs');
+const { PDFDocument, StandardFonts } = require('pdf-lib');
 const app = require('../src/app');
 const { User } = require('../src/modules/users/user.model');
 
@@ -29,4 +30,12 @@ const createAdmin = async () => {
 const login = (agent, email, password) =>
   agent.post('/api/v1/auth/login').send({ email, password });
 
-module.exports = { api, registerUser, createAdmin, login };
+const makePdf = async (text) => {
+  const doc = await PDFDocument.create();
+  const page = doc.addPage([400, 200]);
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  page.drawText(text, { x: 24, y: 100, size: 18, font });
+  return Buffer.from(await doc.save());
+};
+
+module.exports = { api, registerUser, createAdmin, login, makePdf };

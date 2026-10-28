@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import FeedbackBanner from '../../components/FeedbackBanner';
+import ApplicationDocumentButton from '../applications/ApplicationDocumentButton';
 import { APPLICATION_STATUSES, statusLabel } from '../applications/applicationLabels';
 import { updateApplicationStatus } from '../applications/services/applicationApi';
 import { listAdminApplications } from './services/adminApi';
@@ -83,6 +84,7 @@ export default function AdminApplicationsPage() {
               {statusLabel(item.status)}
             </p>
             <p>Applied {String(item.createdAt).slice(0, 10)}</p>
+            <ApplicationDocumentButton application={item} />
             <label>
               Update status
               <select value={item.status} onChange={(event) => onStatus(item._id, event.target.value)}>

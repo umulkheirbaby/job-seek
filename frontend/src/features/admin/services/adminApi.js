@@ -36,6 +36,11 @@ export const verifyJobSeeker = async (id, body) => {
   return data;
 };
 
+export const openJobSeekerDocument = (id) => {
+  const base = import.meta.env.VITE_API_URL || '/api/v1';
+  window.open(`${base}/admin/job-seekers/${id}/document`, '_blank', 'noopener,noreferrer');
+};
+
 export const listAdminApplications = async (status) => {
   const { data } = await api.get('/admin/applications', { params: status ? { status } : {} });
   return data;

@@ -2,6 +2,7 @@ const asyncHandler = require('../../utils/asyncHandler');
 const { sendSuccess } = require('../../utils/apiResponse');
 const { validateApply, validateStatus } = require('./application.validation');
 const applicationService = require('./application.service');
+const { sendPdf } = require('../../utils/combinedPdf');
 
 const apply = asyncHandler(async (req, res) => {
   const input = validateApply(req.body);
@@ -59,4 +60,9 @@ const updateStatus = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { apply, getMineForJob, list, listForJob, updateStatus };
+const downloadDocument = asyncHandler(async (req, res) => {
+  const file = await applicationService.getApplicationDocument(req.params.id, req.user);
+  sendPdf(res, file);
+});
+
+module.exports = { apply, getMineForJob, list, listForJob, updateStatus, downloadDocument };
